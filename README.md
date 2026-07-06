@@ -367,10 +367,12 @@ mimo run --dangerously-skip-permissions "your prompt"
 MIMOCODE_DANGEROUSLY_SKIP_PERMISSIONS=1 mimo
 ```
 
-This injects an **allow-all base underneath your config**, so every tool auto-approves
-*unless you explicitly `deny` it* — your `deny` rules still win. In the TUI it shows a
-red warning and requires you to accept the risk before it takes effect (the prompt is
-skipped when there is no TTY, so automation keeps working).
+This injects an **allow-all base underneath your config**, so a tool with no rule
+auto-approves — but any explicit rule you wrote still wins (the last matching rule wins,
+and your rules sit after the injected `*`). A `deny` still blocks; note that a leftover
+`ask` rule also still prompts, and a top-level `"*": "ask"` makes the flag a no-op. In the
+TUI it shows a red warning and requires you to accept the risk before it takes effect (the
+prompt is skipped when there is no TTY, so in CI it activates with no confirmation).
 
 **This is dangerous.** With permissions bypassed, a malicious prompt, file, or plugin can
 run arbitrary shell commands and read, modify, or exfiltrate your data without any
