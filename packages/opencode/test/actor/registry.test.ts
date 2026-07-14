@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, test } from "bun:test"
 import { Effect, Layer, ManagedRuntime } from "effect"
 import { Instance } from "../../src/project/instance"
 import { Session } from "../../src/session"
@@ -16,6 +16,13 @@ const testLayer = Layer.mergeAll(Session.defaultLayer, ActorRegistry.defaultLaye
 
 afterEach(async () => {
   await Instance.disposeAll()
+})
+
+// Database.Client is a process-level singleton so rows survive across tmpdirs.
+// orphan recovery only touches rows whose instance_id differs, and same-process
+// tests share the same PROCESS_INSTANCE_ID — so wipe leftover rows before each test.
+beforeEach(() => {
+  Database.use((db) => db.delete(ActorRegistryTable).run())
 })
 
 /**
