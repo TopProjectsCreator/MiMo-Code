@@ -233,7 +233,7 @@ describe("Worktree", () => {
 
             expect(outerRef).toBe(worktreeHead)
 
-            yield* Effect.promise(() => Instance.dispose()).pipe(provideInstance(info.directory))
+            yield* Effect.promise(() => Instance.disposeDirectory(info.directory))
             yield* Effect.promise(() => Bun.sleep(100))
             yield* svc.remove({ directory: info.directory })
           }),
@@ -281,7 +281,7 @@ describe("Worktree", () => {
             }
 
             for (const { info } of heads) {
-              yield* Effect.promise(() => Instance.dispose()).pipe(provideInstance(info.directory))
+              yield* Effect.promise(() => Instance.disposeDirectory(info.directory))
             }
             yield* Effect.promise(() => Bun.sleep(100))
             for (const { info } of heads) {
